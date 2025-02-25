@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Union Dues Calculator</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      padding-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="mb-4">Union Dues Calculator</h1>
+    <p>
+      Enter your <strong>annual wage</strong> to see how much you would pay in <strong>monthly</strong> dues under four alternative structures.
+      This calculator will show you <strong>approximately</strong> what your monthly dues will be under each structure - actual dues may vary.
+    </p>
+    <ul>
+      <li><strong>Option 1:</strong> Status quo – a fixed <strong>$60</strong> per month.</li>
+      <li><strong>Option 2:</strong> Dues equal to <strong>0.95%</strong> of your monthly wage.</li>
+      <li><strong>Option 3:</strong> Dues equal to <strong>1%</strong> of your monthly wage, capped at <strong>$70</strong> per month.</li>
+      <li><strong>Option 4:</strong> A progressive structure:
+        <ul>
+          <li>0.9% on the first $5,500</li>
+          <li>1.1% on the next $2,000 (wages from $5,501 to $7,500)</li>
+          <li>1.2% on any wages above $7,500</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div class="mb-3">
+      <label for="wageInput" class="form-label">Annual Wage ($)</label>
+      <input type="number" class="form-control" id="wageInput" placeholder="Enter your annual wage" oninput="calculateDues()">
+    </div>
+    
+    <h3>Results</h3>
+    <table class="table">
+      <tbody>
+        <tr>
+          <th scope="row">Option 1</th>
+          <td id="result1">$60.00</td>
+        </tr>
+        <tr>
+          <th scope="row">Option 2</th>
+          <td id="result2">$0.00</td>
+        </tr>
+        <tr>
+          <th scope="row">Option 3</th>
+          <td id="result3">$0.00</td>
+        </tr>
+        <tr>
+          <th scope="row">Option 4</th>
+          <td id="result4">$0.00</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function calculateDues() {
+      var annualWage = parseFloat(document.getElementById("wageInput").value);
+      
+      // If input is invalid or empty, reset outputs
+      if (isNaN(annualWage) || annualWage < 0) {
+        document.getElementById("result1").innerText = "$60.00";
+        document.getElementById("result2").innerText = "$0.00";
+        document.getElementById("result3").innerText = "$0.00";
+        document.getElementById("result4").innerText = "$0.00";
+        return;
+      }
+      
+      // Convert annual wage to monthly wage
+      var wage = annualWage / 12;
+      
+      // Option 1: Fixed $60 per month
+      var dues1 = 60.00;
+      
+      // Option 2: 0.95% of monthly wage
+      var dues2 = wage * 0.0095;
+      
+      // Option 3: 1% of monthly wage, capped at $70 per month
+      var dues3 = wage * 0.01;
+      if (dues3 > 70) {
+        dues3 = 70;
+      }
+      
+      // Option 4: Progressive structure calculation on monthly wage
+      var dues4 = 0;
+      var remainingWage = wage;
+      
+      // First $5,500 at 0.9%
+      if (remainingWage > 0) {
+        var portion = Math.min(remainingWage, 5500);
+        dues4 += portion * 0.009;
+        remainingWage -= portion;
+      }
+      
+      // Next $2,000 at 1.1%
+      if (remainingWage > 0) {
+        var portion = Math.min(remainingWage, 2000);
+        dues4 += portion * 0.011;
+        remainingWage -= portion;
+      }
+      
+      // Any remaining wages over $7,500 at 1.2%
+      if (remainingWage > 0) {
+        dues4 += remainingWage * 0.012;
+      }
+      
+      // Display the results with two decimals
+      document.getElementById("result1").innerText = "$" + dues1.toFixed(2);
+      document.getElementById("result2").innerText = "$" + dues2.toFixed(2);
+      document.getElementById("result3").innerText = "$" + dues3.toFixed(2);
+      document.getElementById("result4").innerText = "$" + dues4.toFixed(2);
+    }
+  </script>
+  
+  <!-- Bootstrap Bundle JS (including Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
